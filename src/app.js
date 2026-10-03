@@ -9,14 +9,54 @@ import { apiLimiter } from './middleware/rateLimit.middleware.js';
 import { notFound, errorHandler } from './middleware/error.middleware.js';
 
 const app = express();
+
 app.disable('x-powered-by');
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({ origin: env.clientUrl === '*' ? true : env.clientUrl.split(',').map(v=>v.trim()), credentials: true }));
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: 'cross-origin'
+    }
+  })
+);
+
+const allowedOrigins =
+  env.clientUrl === '*'
+    ? true
+    : env.clientUrl.split(',').map(v => v.trim());
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true
+  })
+);
+
 app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ extended: true, limit: '2mb' }));
-app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
-app.use('/uploads', express.static(path.resolve(env.uploadDir)));
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '2mb'
+  })
+);
+
+app.use(
+  morgan(
+    env.nodeEnv === 'production'
+      ? 'combined'
+      : 'dev'
+  )
+);
+
+app.use(
+  '/uploads',
+  express.static(path.resolve(env.uploadDir))
+);
+
 app.use('/api', apiLimiter, routes);
+
 app.use(notFound);
 app.use(errorHandler);
+
 export default app;
