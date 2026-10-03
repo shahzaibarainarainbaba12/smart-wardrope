@@ -1,0 +1,1 @@
+export function scoreItem(item,{mood='',occasion=''}){let s=0;const hay=[item.name,item.subCategory,item.color,...(item.tags||[])].join(' ').toLowerCase();for(const word of `${mood} ${occasion}`.toLowerCase().split(/\s+/))if(word&&hay.includes(word))s+=2;if(item.status==='ready')s+=5;return s;}

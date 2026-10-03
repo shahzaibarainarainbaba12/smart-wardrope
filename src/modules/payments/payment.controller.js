@@ -1,0 +1,13 @@
+import * as s from './payment.service.js';import {ok} from '../../utils/ApiResponse.js';
+export const config=async(req,res)=>ok(res,await s.getConfig());
+export const updateConfig=async(req,res)=>ok(res,await s.updateConfig(req.body,req.file),'Payment settings updated');
+export const methods=async(req,res)=>ok(res,await s.listMethods());
+export const adminMethods=async(req,res)=>ok(res,await s.adminMethods());
+export const createMethod=async(req,res)=>ok(res,await s.createMethod(req.body,req.file),'Payment method created',201);
+export const updateMethod=async(req,res)=>ok(res,await s.updateMethod(req.params.id,req.body,req.file),'Payment method updated');
+export const removeMethod=async(req,res)=>ok(res,await s.removeMethod(req.params.id),'Payment method deleted');
+export const checkout=async(req,res)=>ok(res,await s.checkout(req.user._id,req.user.role,req.params.planCode));
+export const submit=async(req,res)=>ok(res,await s.submit(req.user._id,req.user.role,req.body,req.file),'Payment submitted for review',201);
+export const mine=async(req,res)=>ok(res,await s.mine(req.user._id));
+export const pending=async(req,res)=>ok(res,await s.pending());
+export const review=async(req,res)=>ok(res,await s.review(req.user._id,req.params.id,req.body.status,req.body.adminNote),'Payment reviewed');

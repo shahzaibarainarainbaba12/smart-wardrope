@@ -1,0 +1,1 @@
+import * as s from './user.service.js'; import { ok } from '../../utils/ApiResponse.js'; export const getMe=async(req,res)=>ok(res,await s.getById(req.user._id)); export const updateMe=async(req,res)=>ok(res,await s.update(req.user._id,req.body),'User updated');

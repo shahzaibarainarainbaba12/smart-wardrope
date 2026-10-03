@@ -1,0 +1,16 @@
+import { Router } from 'express';
+import { z } from 'zod';
+import { requireAuth } from '../../middleware/auth.middleware.js';
+import { requireAiAccess } from '../../middleware/aiAccess.middleware.js';
+import { upload } from '../../middleware/upload.middleware.js';
+import { validate } from '../../middleware/validate.middleware.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
+import * as c from './ai.controller.js';
+const r=Router();r.use(requireAuth,asyncHandler(requireAiAccess));
+const suggestSchema=z.object({body:z.object({mood:z.string().optional(),occasion:z.string().optional(),notes:z.string().optional(),save:z.boolean().optional()}),params:z.object({}),query:z.object({})});
+const chatSchema=z.object({body:z.object({conversationId:z.string().optional(),message:z.string().min(1)}),params:z.object({}),query:z.object({})});
+r.post('/chat',validate(chatSchema),asyncHandler(c.chat));
+r.post('/suggest-outfit',validate(suggestSchema),asyncHandler(c.suggest));
+r.post('/item-intake',upload.single('image'),asyncHandler(c.startItemIntake));
+r.post('/item-intake/:id',asyncHandler(c.continueItemIntake));
+r.get('/conversations',asyncHandler(c.conversations));r.get('/conversations/:id',asyncHandler(c.conversation));export default r;

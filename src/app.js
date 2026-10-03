@@ -1,0 +1,22 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import path from 'path';
+import { env } from './config/env.js';
+import routes from './routes/index.js';
+import { apiLimiter } from './middleware/rateLimit.middleware.js';
+import { notFound, errorHandler } from './middleware/error.middleware.js';
+
+const app = express();
+app.disable('x-powered-by');
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(cors({ origin: env.clientUrl === '*' ? true : env.clientUrl.split(',').map(v=>v.trim()), credentials: true }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
+app.use('/uploads', express.static(path.resolve(env.uploadDir)));
+app.use('/api', apiLimiter, routes);
+app.use(notFound);
+app.use(errorHandler);
+export default app;

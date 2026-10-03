@@ -1,0 +1,1 @@
+import{z}from'zod';export const profileSchema=z.object({body:z.object({displayName:z.string().optional(),phone:z.string().optional(),gender:z.string().optional(),timezone:z.string().optional(),preferences:z.object({theme:z.string().optional(),voiceGreeting:z.boolean().optional()}).optional()}),params:z.object({}),query:z.object({})});

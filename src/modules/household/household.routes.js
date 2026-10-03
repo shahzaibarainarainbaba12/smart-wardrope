@@ -1,0 +1,2 @@
+import {Router} from 'express';import * as c from './household.controller.js';import {requireAuth} from '../../middleware/auth.middleware.js';import {upload} from '../../middleware/upload.middleware.js';import {asyncHandler} from '../../utils/asyncHandler.js';
+const r=Router();r.use(requireAuth);r.get('/',asyncHandler(c.list));r.post('/members',upload.single('avatar'),asyncHandler(c.addMember));r.patch('/members/:id',upload.single('avatar'),asyncHandler(c.updateMember));r.delete('/members/:id',asyncHandler(c.removeMember));export default r;

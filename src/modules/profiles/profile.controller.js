@@ -1,0 +1,1 @@
+import*as s from'./profile.service.js';import{ok}from'../../utils/ApiResponse.js';export const get=async(req,res)=>ok(res,await s.get(req.user._id));export const update=async(req,res)=>ok(res,await s.update(req.user._id,{...req.body,...(req.file?{avatar:`/${req.file.path.replaceAll('\\','/')}`}:{})}),'Profile updated');

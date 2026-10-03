@@ -1,0 +1,3 @@
+import User from './user.model.js'; import ApiError from '../../utils/ApiError.js'; import { comparePassword,hashPassword } from '../../utils/password.js';
+export const getById=(id)=>User.findById(id).select('-password');
+export async function update(id,input){ const user=await User.findById(id).select('+password'); if(!user) throw new ApiError(404,'User not found'); if(input.newPassword){ if(!input.currentPassword || !(await comparePassword(input.currentPassword,user.password))) throw new ApiError(400,'Current password is incorrect'); user.password=await hashPassword(input.newPassword); } if(input.name) user.name=input.name; if(input.email) user.email=input.email.toLowerCase(); await user.save(); user.password=undefined; return user; }
