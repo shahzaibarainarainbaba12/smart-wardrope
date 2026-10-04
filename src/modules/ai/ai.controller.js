@@ -1,8 +1,124 @@
-import * as s from './ai.service.js';
+import * as service from './ai.service.js';
 import { ok } from '../../utils/ApiResponse.js';
-export const suggest=async(req,res)=>ok(res,await s.suggest(req.user._id,req.body),'Outfit suggestion ready');
-export const chat=async(req,res)=>ok(res,await s.chat(req.user._id,req.body),'Assistant reply ready');
-export const startItemIntake=async(req,res)=>ok(res,await s.startItemIntake(req.user._id,req.file),'Item intake started');
-export const continueItemIntake=async(req,res)=>ok(res,await s.continueItemIntake(req.user._id,req.params.id,req.body,req.user.role),'Item intake updated');
-export const conversations=async(req,res)=>ok(res,await s.listConversations(req.user._id),'AI conversations');
-export const conversation=async(req,res)=>ok(res,await s.getConversation(req.user._id,req.params.id),'AI conversation');
+
+
+/* ======================================================
+   OUTFIT SUGGESTION
+====================================================== */
+
+export const suggest = async (req, res) => {
+  const result =
+    await service.suggest(
+      req.user._id,
+      req.body
+    );
+
+  return ok(
+    res,
+    result,
+    'Outfit suggestion ready'
+  );
+};
+
+
+/* ======================================================
+   AI CHAT
+====================================================== */
+
+export const chat = async (req, res) => {
+  const result =
+    await service.chat(
+      req.user._id,
+      req.body
+    );
+
+  return ok(
+    res,
+    result,
+    'Assistant reply ready'
+  );
+};
+
+
+/* ======================================================
+   START ITEM INTAKE
+   Camera / Gallery upload
+====================================================== */
+
+export const startItemIntake = async (req, res) => {
+  const result =
+    await service.startItemIntake(
+      req.user._id,
+      req.file
+    );
+
+  return ok(
+    res,
+    result,
+    'Item intake started'
+  );
+};
+
+
+/* ======================================================
+   CONTINUE ITEM INTAKE
+   Collection → Type → Details → Save
+
+   req.subscription is attached by requireAiAccess.
+   Household members inherit the owner's subscription,
+   so we pass the populated plan into the service.
+====================================================== */
+
+export const continueItemIntake = async (req, res) => {
+  const result =
+    await service.continueItemIntake(
+      req.user._id,
+      req.params.id,
+      req.body,
+      req.user.role,
+      req.subscription?.plan || null
+    );
+
+  return ok(
+    res,
+    result,
+    'Item intake updated'
+  );
+};
+
+
+/* ======================================================
+   CONVERSATIONS LIST
+====================================================== */
+
+export const conversations = async (req, res) => {
+  const result =
+    await service.listConversations(
+      req.user._id
+    );
+
+  return ok(
+    res,
+    result,
+    'AI conversations'
+  );
+};
+
+
+/* ======================================================
+   SINGLE CONVERSATION
+====================================================== */
+
+export const conversation = async (req, res) => {
+  const result =
+    await service.getConversation(
+      req.user._id,
+      req.params.id
+    );
+
+  return ok(
+    res,
+    result,
+    'AI conversation'
+  );
+};
