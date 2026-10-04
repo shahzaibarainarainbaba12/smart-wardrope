@@ -11,10 +11,9 @@ import * as controller from './ai.controller.js';
 
 const router = Router();
 
+
 /* ======================================================
-   ALL AI ROUTES REQUIRE:
-   1. Logged-in user
-   2. Paid AI access
+   ALL AI ROUTES REQUIRE
 ====================================================== */
 
 router.use(
@@ -29,10 +28,24 @@ router.use(
 
 const suggestSchema = z.object({
   body: z.object({
-    mood: z.string().trim().optional(),
-    occasion: z.string().trim().optional(),
-    notes: z.string().trim().optional(),
-    save: z.boolean().optional()
+    mood: z
+      .string()
+      .trim()
+      .optional(),
+
+    occasion: z
+      .string()
+      .trim()
+      .optional(),
+
+    notes: z
+      .string()
+      .trim()
+      .optional(),
+
+    save: z
+      .boolean()
+      .optional()
   }),
 
   params: z.object({}),
@@ -42,12 +55,23 @@ const suggestSchema = z.object({
 
 const chatSchema = z.object({
   body: z.object({
-    conversationId: z.string().trim().optional(),
+    conversationId: z
+      .string()
+      .trim()
+      .nullable()
+      .optional(),
+
     message: z
       .string()
       .trim()
-      .min(1, 'Message is required')
-      .max(5000, 'Message is too long')
+      .min(
+        1,
+        'Message is required'
+      )
+      .max(
+        5000,
+        'Message is too long'
+      )
   }),
 
   params: z.object({}),
@@ -57,10 +81,17 @@ const chatSchema = z.object({
 
 const continueItemIntakeSchema = z.object({
   body: z.object({
-    action: z.string().trim().optional(),
+    action: z
+      .string()
+      .trim()
+      .optional(),
 
     collectionIds: z
-      .array(z.string().trim())
+      .array(
+        z
+          .string()
+          .trim()
+      )
       .optional(),
 
     typeId: z
@@ -70,16 +101,34 @@ const continueItemIntakeSchema = z.object({
 
     details: z
       .object({
-        name: z.string().trim().optional(),
-        color: z.string().trim().optional(),
-        subCategory: z.string().trim().optional(),
-        notes: z.string().trim().optional()
+        name: z
+          .string()
+          .trim()
+          .optional(),
+
+        color: z
+          .string()
+          .trim()
+          .optional(),
+
+        subCategory: z
+          .string()
+          .trim()
+          .optional(),
+
+        notes: z
+          .string()
+          .trim()
+          .optional()
       })
       .optional()
   }),
 
   params: z.object({
-    id: z.string().trim().min(1)
+    id: z
+      .string()
+      .trim()
+      .min(1)
   }),
 
   query: z.object({})
@@ -87,10 +136,15 @@ const continueItemIntakeSchema = z.object({
 
 
 const conversationSchema = z.object({
-  body: z.object({}).optional(),
+  body: z
+    .object({})
+    .optional(),
 
   params: z.object({
-    id: z.string().trim().min(1)
+    id: z
+      .string()
+      .trim()
+      .min(1)
   }),
 
   query: z.object({})
@@ -99,7 +153,6 @@ const conversationSchema = z.object({
 
 /* ======================================================
    CHAT
-   Text typed by user OR converted from microphone speech
 ====================================================== */
 
 router.post(
@@ -110,7 +163,7 @@ router.post(
 
 
 /* ======================================================
-   COMPLETE OUTFIT SUGGESTION
+   OUTFIT SUGGESTION
 ====================================================== */
 
 router.post(
@@ -122,51 +175,52 @@ router.post(
 
 /* ======================================================
    CAMERA / GALLERY ITEM INTAKE
-
-   FormData:
-   image = uploaded image
 ====================================================== */
 
 router.post(
   '/item-intake',
   upload.single('image'),
-  asyncHandler(controller.startItemIntake)
+  asyncHandler(
+    controller.startItemIntake
+  )
 );
 
 
 /* ======================================================
-   ITEM FLOW
-
-   Collection
-      ↓
-   Type
-      ↓
-   Item details
-      ↓
-   Save
+   ITEM INTAKE CONTINUE
 ====================================================== */
 
 router.post(
   '/item-intake/:id',
-  validate(continueItemIntakeSchema),
-  asyncHandler(controller.continueItemIntake)
+  validate(
+    continueItemIntakeSchema
+  ),
+  asyncHandler(
+    controller.continueItemIntake
+  )
 );
 
 
 /* ======================================================
-   AI CONVERSATIONS
+   CONVERSATIONS
 ====================================================== */
 
 router.get(
   '/conversations',
-  asyncHandler(controller.conversations)
+  asyncHandler(
+    controller.conversations
+  )
 );
 
 
 router.get(
   '/conversations/:id',
-  validate(conversationSchema),
-  asyncHandler(controller.conversation)
+  validate(
+    conversationSchema
+  ),
+  asyncHandler(
+    controller.conversation
+  )
 );
 
 
